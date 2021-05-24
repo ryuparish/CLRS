@@ -1,6 +1,5 @@
 #include <iostream>
 #include <stdlib.h>
-
 // Implementing a queue using only a linked list
 // Used some heap allocation, but there is definitely memory leakage.
 
@@ -9,42 +8,41 @@ struct link{
     link* next = NULL;
 };
 
-void list_delete(link*& start) {
+void dequeue(link*& start) {
     // Start is a pointer the first object in the linked list
-    link* temp = (link*)malloc(sizeof(link*));
-    temp = start;
-    start = start->next;
-    free(temp);
-}
-
-void list_insert(link*& start, link*& x){
-    x->next = start->next;
-    start = x;
-}
-
-void list_search(link*& start, int len, int a){
-    // Searching for the value a in the linked list
+    // If start is not pointing to NULL, point the starter at the 2nd elem
     link* walker = (link*)malloc(sizeof(link*));
     walker = start;
-    for(int i = 0; i < len; ++i){
-        if(walker->value == a){
-            std::cout << "Value found!\n";
-            return;
+    while(walker->next != NULL){
+        if(walker->next->next == NULL){
+            link* next_holder = (link*)malloc(sizeof(link*));
+            next_holder = walker->next;
+            walker->next = NULL;
+            walker = next_holder;
+            break;
         }
         walker = walker->next;
     }
-    std::cout << "Value not found.\n";
+    std::cout << "Freeing: " << walker->value << "\n";
+    free(walker);
+}
+        
+void queue(link*& start, link*& x){
+    if(start != NULL){
+        // x will point at what start is pointing at
+        x->next = start;
+        start = x;
+    }
 }
 
-        
-
-void print_list(link* start, int a){
+void print_list(link*& start){
     link* walker = (link*)malloc(sizeof(link*));
     walker = start;
-    for(int i = 0; i < a; ++i){
-        std::cout << walker->value  << "\n";
+    while(walker != NULL){
+        std::cout << walker->value << "\n";
         walker = walker->next;
     }
+    free(walker);
 }
     
 int main() {
@@ -58,28 +56,25 @@ int main() {
     link3->value = 3; link3->next = NULL;
     
     // Linking them together
-    starter->next = link1;
-    link1->next = link2; link2->next = link3;
-    link3->next = starter;
+    starter = link1;
+    link1->next = link2;
+    link2->next = link3;
 
     // Print out the current list 
-    print_list(starter, 4);
+    print_list(starter);
 
     // Push a link onto the stack and print
     link* link4 = (link*)malloc(sizeof(link*));
-    link4->value = 4;
-    list_insert(starter, link4);
-    std::cout << "Printing the list after inserting:\n";
-    print_list(starter, 5);
+    link4->value = 0;
+    queue(starter, link4);
+    std::cout << "Printing the list after pushing:\n";
+    print_list(starter);
 
     // Popping a link and printing
-    list_delete(starter);
-    std::cout << "Printing the list after deleting:\n";
-    print_list(starter, 4);
+    dequeue(starter);
+    std::cout << "Printing the list after popping:\n";
+    print_list(starter);
     
-    // Searching the list for the number 3
-    list_search(starter, 4, 3);
-
     // Freeing all the data in the linked list
     while(starter != NULL){
         link* temp = (link*)malloc(sizeof(link*));
