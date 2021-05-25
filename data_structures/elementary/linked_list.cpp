@@ -9,6 +9,7 @@ struct link{
     link* next = NULL;
 };
 
+// O(1) time
 void list_delete(link*& start) {
     // Start is a pointer the first object in the linked list
     link* temp = (link*)malloc(sizeof(link*));
@@ -17,11 +18,13 @@ void list_delete(link*& start) {
     free(temp);
 }
 
+// O(1) time
 void list_insert(link*& start, link*& x){
     x->next = start->next;
     start = x;
 }
 
+// O(n) in the worst case
 void list_search(link*& start, int len, int a){
     // Searching for the value a in the linked list
     link* walker = (link*)malloc(sizeof(link*));
