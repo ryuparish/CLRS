@@ -1,0 +1,1 @@
+The running time in big-O notation is the same in either case since there is no pruning. Running heapsort on a list in increasing order will take longer by some constant. Which means the O(nlog(n)) run time is run time for both.

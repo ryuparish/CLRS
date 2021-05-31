@@ -1,0 +1,3 @@
+Not sure what is mean't by this question. I assume the answer is to use pop() and push() instead of letting the user decide which index is to be freed.
+
+Okay now I get what they mean since they reveal a bit more in the next question. So yes, ASSUMING the data does not exceed the virtual page memory li mit, you would use a stack like structure with strict deallocating that only allows allocation from the end.

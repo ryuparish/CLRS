@@ -1,0 +1,14 @@
+Min-Heapify(A,i):
+    l = i.left
+    r = i.right
+    if A[l] < A[i]:
+        smallest = l
+    else {smallest = i}
+    if A[r] < A[smallest]: 
+        smallest = r
+    if smallest != i
+        exchange A[i] with A[smallest]
+        Min-Heapify(A, smallest)
+        
+
+This has the same O notation as the Max-Heapify.

@@ -1,0 +1,1 @@
+Because although a list is typically traversed by starting at 0 and iterating to the length of the list, a max heap is largest at index 0. Therefore, the building-a-max-heap function will need to traverse from length/2 to 0.

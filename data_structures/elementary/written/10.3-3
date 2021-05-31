@@ -1,0 +1,4 @@
+We do? I am definitely confused about this question.
+You need to set the prev and next if you want the list to be able to changeorder in which it is traversed.
+
+If you wanted to, you could implement it so that it would only travel in a certain path, then you would just check for None and then not print it if it was a None value that occupied the Value spot. But then, your linked list would always run in O(n) time, where n is the size of the linked list.
