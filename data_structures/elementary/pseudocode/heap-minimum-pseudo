@@ -1,0 +1,25 @@
+heap_minimum(A):
+    return A[1]
+
+heap_extract_min(A):
+    if A.heap-size < 1:
+        error "heap underflow"
+    min = A[1]
+    A[1] = A[A.heap-size]
+    A.heap-size = A.heap-size -1
+    Min-Heapify(A, 1)
+    return max
+
+heap-decrease-key(A, i, k):
+    if k > A[i]:
+        error "New key is larger than the current key"
+    A[i] = k
+    while i > 1 && A[i].parent > A[i]:
+        exchange A[i] with A[i].parent
+        i = A[i].parent
+
+min-heap-insert(A, k):
+    A.heap-size = A.heap-size + 1
+    A[heap-size] = inf
+    heap-decrease-key(A, A.heap-size, k)
+
