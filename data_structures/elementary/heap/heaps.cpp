@@ -26,12 +26,12 @@ void maxHeapify(std::vector<heapNode>& array, int index){
     }
 
     // DEBUG
-    std::cout << "Out of: " << array[left].value << " " << array[right].value << " " << array[index].value << "\n" << array[largest].value << " was the largest\n";
+    //std::cout << "Out of: " << array[left].value << " " << array[right].value << " " << array[index].value << "\n" << array[largest].value << " was the largest\n";
 
     // If the parent was not the largest then switch nodes
     if(array[largest].value != array[index].value){
         // DEBUG
-        std::cout << "Swapping: " << array[largest].value << " and " << array[index].value << "\n";
+        // std::cout << "Swapping: " << array[largest].value << " and " << array[index].value << "\n";
         int temp = array[index].value;
         array[index].value = array[largest].value;
         array[largest].value = temp;
@@ -70,8 +70,9 @@ int main(){
         node.parent = ((i-1) / 2);
         node.lchild = (2 * i) + 1;
         node.rchild = (2 * i) + 2;
-        std::cout << "i is: " << i << "\n";
-        std::cout << "Value: " << a << " has:\nParent: " << node.parent << "\nLchild: " << node.lchild << "\nRchild: " << node.rchild << "\n";
+        // DEBUG
+        //std::cout << "i is: " << i << "\n";
+        //std::cout << "Value: " << a << " has:\nParent: " << node.parent << "\nLchild: " << node.lchild << "\nRchild: " << node.rchild << "\n";
 
         arrayNodes.push_back(node);
         i++;
