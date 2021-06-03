@@ -1,0 +1,1 @@
+You would have to run through the entire unsorted array to check every element to see if it is the biggest. The time complexity is O(n) time.

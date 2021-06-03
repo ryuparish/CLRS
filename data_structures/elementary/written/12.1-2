@@ -1,0 +1,3 @@
+The binary-search-tree property and the min heap property differ because the min-heap property does not allow child nodes that are equivalent, they must be greater than the parent node's value.
+
+It would be very difficult (I think) to have the min heap property tree print out a sorted list. You would not be able to use the same recursive function as you would in a binary search tree.

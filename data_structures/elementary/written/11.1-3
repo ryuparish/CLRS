@@ -1,0 +1,1 @@
+I think you would use the index as keys (since it is a direct address table) and then the value contained would be 0 or 1, and the value is 1, then the next value in the element is a pointer to an object. If the value is 0, then the next value in the element is NULL.

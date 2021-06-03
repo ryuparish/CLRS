@@ -1,0 +1,1 @@
+You could use the bit vector as a dictionary by using the index as the keys, and the bit contained to represent if the index exists in a set or not. The time complexity for getting either "exist" or "does not exist" is O(1) time.
