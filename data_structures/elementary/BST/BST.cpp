@@ -42,6 +42,73 @@ node* treeMaximum(node* Node){
     return Node;
 }
 
+// Only to be used by the treeDelete function
+// This function seems to destroy node1 and replace it with node2
+//void transplant(node*& root, node*& node1, node*& node2){
+//    if(node1->parent == NULL){
+//        root = node2; }
+//    else if(node1 == node1->parent->left){
+//        node1->parent->left = node2;
+//    }
+//    else{node1->parent->right == node2;}
+//    if(node2 = NULL){
+//        node2->parent = node2->parent;
+//    }
+//}
+
+//void treeDelete(node*& root, node*& target_node){
+//    if(target_node->left == NULL){
+//        transplant(root, target_node, target_node->right);
+//    }
+//    else if(target_node->right == NULL){
+//        transplant(root, target_node, target_node->left);
+//    }
+//    else{
+//        node* smallest_left = treeMinimum(target_node->right);
+//        if(smallest_left->parent != target_node){
+//            transplant(root, smallest_left, smallest_left->right);
+//            smallest_left->right = target_node->right;
+//            smallest_left->right->parent = smallest_left;
+//        }
+//        transplant(root, target_node, smallest_left);
+//        smallest_left->left = target_node->left;
+//        smallest_left->left->parent = smallest_left;
+//    }
+//}
+        
+
+void treeInsert(node*& root, node*& new_node){
+    // This is also called a trailing pointer
+    node* previous_holder = new node;
+
+    // Copying the value of the root so we can use the walker
+    node* walker = new node;
+    walker->value = root->value;
+    walker->left = root->left;
+    walker->right = root->right;
+    walker->parent = root->parent;
+
+    // Conclusively finds a null place to put new node
+    while(walker != NULL){
+        previous_holder = walker;
+        if(new_node->value < walker->value){
+            walker = walker->left;
+        }
+        else{walker = walker->right;}
+    }
+
+    new_node->parent = previous_holder;
+    // If the root was NULL and there was no tree
+    if(previous_holder == NULL){
+        root = new_node;
+    }
+    else if(new_node->value < previous_holder->value){
+        previous_holder->left = new_node;
+    }
+    else{previous_holder->right = new_node;}
+}
+        
+
 node* treeSuccessor(node* Node){
     if(Node->right != NULL){
         return treeMinimum(Node->right);
@@ -53,6 +120,23 @@ node* treeSuccessor(node* Node){
     }
     return parent;
 }
+
+// Unfinished, this is the same thing as the above function, and needs to be changed to give the predecessor
+node* treePredecessor(node* Node){
+    if(Node->left != NULL){
+        return treeMaximum(Node->left);
+    }
+    node* left = Node->left;
+    // Will conclusively return either the left child or NULL
+    while(left != NULL && left->value >= Node->right->value){
+        Node = left;
+        left = left->left;
+    }
+    return left;
+}
+
+//void treeInsert(node* root, node* new_node){
+//    node* 
 
 int main() {
     // Setting up the tree values
@@ -102,13 +186,32 @@ int main() {
     std::cout << "Here is the minimum: " << treeMinimum(root)->value << "\n";
 
     // The successor of the node with the value 2
-    std::cout << "Here is the parent of the value 2: "; 
+    std::cout << "Here is the successor of the value 2: "; 
     if (treeSuccessor(node3) != NULL){
         std::cout << treeSuccessor(node3)->value << "\n";
-        return 0;
     }
-    std::cout << "nothing was found\n";
+    else{std::cout << "nothing was found\n";}
 
+    // The predecessor of the node with the value 2
+    std::cout << "Here is the predecessor of the value 9: "; 
+    if (treePredecessor(node2) != NULL){
+        std::cout << treePredecessor(node2)->value << "\n";
+    }
+    else{std::cout << "nothing was found\n";}
+
+    // Adding the number one to the tree
+    std::cout << "Now adding the value 8 to the tree\n";
+    node* node8 = new node;
+    node8->value = 8;
+    treeInsert(root, node8);
+    inorderTreeWalk(root);
+
+    // Too lazy to implement this today
+    // Deleting the node with the number 3
+    //std::cout << "Now deleting the number 3 from the list\n";
+    //treeDelete(root, node1);
+    //inorderTreeWalk(root);
     return 0;
+
 }
     
