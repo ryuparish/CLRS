@@ -8,7 +8,6 @@ struct node{
 };
 
 void inorderTreeWalk(node*& walker){
-    //if(sizeof(walker) == sizeof(node*)){
     if(walker != NULL){
         // std::cout << walker->parent << " <- value of the walker pointer\n";
         inorderTreeWalk(walker->left);
@@ -44,37 +43,39 @@ node* treeMaximum(node* Node){
 
 // Only to be used by the treeDelete function
 // This function seems to destroy node1 and replace it with node2
-//void transplant(node*& root, node*& node1, node*& node2){
-//    if(node1->parent == NULL){
-//        root = node2; }
-//    else if(node1 == node1->parent->left){
-//        node1->parent->left = node2;
-//    }
-//    else{node1->parent->right == node2;}
-//    if(node2 = NULL){
-//        node2->parent = node2->parent;
-//    }
-//}
+// And established the parent to new_child / new_child to parent relation
+void transplant(node*& root, node*& node1, node*& node2){
+    if(node1->parent == NULL){
+        root = node2;
+    }
+    else if(node1 == node1->parent->left){
+        node1->parent->left = node2;
+    }
+    else{node1->parent->right == node2;}
+    if(node2 != NULL){
+        node2->parent = node1->parent;
+    }
+}
 
-//void treeDelete(node*& root, node*& target_node){
-//    if(target_node->left == NULL){
-//        transplant(root, target_node, target_node->right);
-//    }
-//    else if(target_node->right == NULL){
-//        transplant(root, target_node, target_node->left);
-//    }
-//    else{
-//        node* smallest_left = treeMinimum(target_node->right);
-//        if(smallest_left->parent != target_node){
-//            transplant(root, smallest_left, smallest_left->right);
-//            smallest_left->right = target_node->right;
-//            smallest_left->right->parent = smallest_left;
-//        }
-//        transplant(root, target_node, smallest_left);
-//        smallest_left->left = target_node->left;
-//        smallest_left->left->parent = smallest_left;
-//    }
-//}
+void treeDelete(node*& root, node*& target_node){
+    if(target_node->left == NULL){
+        transplant(root, target_node, target_node->right);
+    }
+    else if(target_node->right == NULL){
+        transplant(root, target_node, target_node->left);
+    }
+    else{
+        node* smallest_left = treeMinimum(target_node->right);
+        if(smallest_left->parent != target_node){
+            transplant(root, smallest_left, smallest_left->right);
+            smallest_left->right = target_node->right;
+            smallest_left->right->parent = smallest_left;
+        }
+        transplant(root, target_node, smallest_left);
+        smallest_left->left = target_node->left;
+        smallest_left->left->parent = smallest_left;
+    }
+}
         
 
 void treeInsert(node*& root, node*& new_node){
@@ -121,7 +122,6 @@ node* treeSuccessor(node* Node){
     return parent;
 }
 
-// Unfinished, this is the same thing as the above function, and needs to be changed to give the predecessor
 node* treePredecessor(node* Node){
     if(Node->left != NULL){
         return treeMaximum(Node->left);
@@ -134,9 +134,6 @@ node* treePredecessor(node* Node){
     }
     return left;
 }
-
-//void treeInsert(node* root, node* new_node){
-//    node* 
 
 int main() {
     // Setting up the tree values
@@ -166,8 +163,8 @@ int main() {
     // Setting up the children
     root->left = node1;
     root->right = node2;
-    node1->left = node3; node1->right = node4;
-    node2->left = node5; node2->right = node6;
+    node1->left = node3; node1->right = node4; node1->parent = root;
+    node2->left = node5; node2->right = node6; node2->parent = root;
     node3->parent = node1; node4->parent = node1; node5->parent = node2; node6->parent = node2;
 
     // Print out the tree in order
@@ -208,9 +205,11 @@ int main() {
 
     // Too lazy to implement this today
     // Deleting the node with the number 3
-    //std::cout << "Now deleting the number 3 from the list\n";
-    //treeDelete(root, node1);
-    //inorderTreeWalk(root);
+    std::cout << "\nNow deleting the number 3 from the list\n";
+    treeDelete(root, node1);
+    //std::cout << "Value of the root in before the last walk: " << root->value << "\n";
+    inorderTreeWalk(root);
+    std::cout << "\n";
     return 0;
 
 }
