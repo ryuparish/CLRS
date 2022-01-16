@@ -10,7 +10,7 @@ struct heapNode{
 
 // This is needed to have both heap_size and size() in a single data structure
 struct heap{
-    int heap_size;
+    int heap_size; // This is not really the heap size, but the heap size -1 for the ease of indexing.
     std::vector<heapNode> heap_array;
     // Constructor
     heap(std::vector<heapNode>& heapNodes){
@@ -54,6 +54,7 @@ void maxHeapify(heap& array, int index){
 
     // If the parent was not the largest then switch nodes
     // To "float" the small values down to the bottom
+    // This is also called percolateDown
     if(array[largest].value != array[index].value){
         int temp = array[index].value;
         array[index].value = array[largest].value;
@@ -73,12 +74,14 @@ int heapExtractMax(heap& Heap){
     return max;
 }
 
-void heapIncreaseKey(heap& Heap, int index, int new_val){
-    if(new_val < Heap[index].value){
-        std::invalid_argument("New value is less than the current value");
-    }
+void changeValue(heap& Heap, int index, int new_val){
+    // This function was formerly called heapIncreaseKey an only allowed increasing values
+    //if(new_val < Heap[index].value){
+    //    std::invalid_argument("New value is less than the current value");
+    //}
     Heap[index].value = new_val;
     int temp;
+    // This is also called percolateUp
     while(index > 0 && Heap[Heap[index].parent].value < Heap[index].value){
         temp = Heap[Heap[index].parent].value;
         Heap[Heap[index].parent].value = Heap[index].value;
@@ -89,28 +92,23 @@ void heapIncreaseKey(heap& Heap, int index, int new_val){
         
 void maxHeapInsert(heap& Heap, int new_val){
     Heap++;
+    // Setting the correct indexes for the children and parent of new node
     Heap[Heap.heap_size].value = -(int)INFINITY;
     Heap[Heap.heap_size].parent = (Heap.heap_size - 1) / 2;
     Heap[Heap.heap_size].lchild = (2 * Heap.heap_size) + 1;
     Heap[Heap.heap_size].rchild = (2 * Heap.heap_size) + 2;
-    heapIncreaseKey(Heap, Heap.heap_size, new_val);
+    changeValue(Heap, Heap.heap_size, new_val);
 }
         
 void buildHeap(heap& Heap){
-    for(int i = (Heap.heap_size/2); i >= 0 ; i--){
-        maxHeapify(Heap, i);
+    if(Heap.heap_size > 0){
+        for(int i = (Heap.heap_size/2); i >= 0 ; i--){
+            maxHeapify(Heap, i);
+        }
     }
 }
 
 void deleteHeapNode(heap& Heap, int index){
-    //int curr_val, new_val = Heap[Heap.heap_size].value;
-    // Brute force method (O(n) time)
-    //for (int i = Heap.heap_size; i > index; i--){
-    //    curr_val = Heap[i-1].value;
-    //    Heap[i-1].value = new_val;
-    //    new_val = curr_val;
-    //}
-    
     // O(log(n)) time
     Heap[index].value = Heap[Heap.heap_size].value;
     Heap--;
@@ -125,10 +123,11 @@ void printArray(heap& heapNodes){
     std::cout << "\n";
 }
 
+// I think something is wrong with this function but I am not going to fix it today
 void heapSort(heap& heapNodes){
     buildHeap(heapNodes);
     int temp;
-    for (int i = heapNodes.size() - 1; i >= 1; --i){
+    for (int i = heapNodes.size(); i > 0; --i){
         temp = heapNodes[0].value;
         heapNodes[0].value = heapNodes[i].value;
         heapNodes[i].value = temp;
@@ -138,24 +137,10 @@ void heapSort(heap& heapNodes){
 }
         
 int main(){
+    // Making empty vector of heapNodes
     std::vector<heapNode> arrayNodes;
 
-    int a, i = 0;
-    std::cout << "Please enter a series of numbers to add to the array: ";
-    // Read in the numbers
-    while(std::cin >> a){
-
-        heapNode node;
-        node.value = a;
-
-        // All other nodes formula
-        node.parent = ((i-1) / 2);
-        node.lchild = (2 * i) + 1;
-        node.rchild = (2 * i) + 2;
-
-        arrayNodes.push_back(node);
-        i++;
-    }
+    char a;
 
     // Converting the vector into a heap object
     heap heapNodes = heap(arrayNodes);
@@ -164,24 +149,105 @@ int main(){
     // Print the heapified heap of heapNodes
     printArray(heapNodes);
 
+    std::cout << "All hail the Heap. Here are your options(press enter after typing):\n";
+    std::cout << "a (add)\ni (increase a specific value)\nd (delete a specific value)\ns (print out the sorted heap)[Warning: Will destroy Heap in the process]\np (print array)\nq (quit)\n";
+    std::cin >> a;
+    // Read in the input
+    while(a != 'q'){
+        printf("%c", a);
+        int index, value;
+        if(a == 'a'){
+            std::cout << "Now you can enter things one at a time (enter -1 to quit): ";
+            while(true){
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+                std::cin >> value;
+                if(value != -1){
+                    maxHeapInsert(heapNodes, value);
+                    printArray(heapNodes);
+                    std::cout << "Continue entering numbers or enter -1: ";
+                }
+                else{
+                    printArray(heapNodes);
+                    break;
+                }
+            }
+        }
+        if(a == 'i'){
+            std::cout << "Which index to increase?:";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+            std::cin >> index;
+            std::cout << "What value to change it to?:";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+            std::cin >> value;
+            changeValue(heapNodes, index, value);
+        }
+        if(a == 'd'){
+            std::cout << "Which index to delete?:";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+            std::cin >> index;
+            deleteHeapNode(heapNodes, index);
+        }
+        if(a == 's'){
+            heapSort(heapNodes);
+        }
+        if(a == 'q'){
+            break;
+        }
+        std::cout << "current heap array: ";
+        printArray(heapNodes);
+        std::cout << "a (add)\ni (increase a specific value)\nd (delete a specific value)\ns (print out the sorted heap)[Warning: Will destroy Heap in the process]\np (print array)\nq (quit)\n";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+        std::cin >> a;
+    }
+
+    // Testing
+    //std::cout << "Please enter a series of numbers to add to the array (q to quit): ";
+    //// Read in the numbers (To test the buildHeap from an un-maxHeapified heap)
+    // int i = 0;
+    // char a;
+    //while(std::cin >> a){
+    //    if(a == 'q'){
+    //        break;
+    //    }
+
+    //    heapNode node;
+    //    node.value = a;
+
+    //    // All other nodes formula
+    //    node.parent = ((i-1) / 2);
+    //    node.lchild = (2 * i) + 1;
+    //    node.rchild = (2 * i) + 2;
+
+    //    arrayNodes.push_back(node);
+    //    i++;
+    //}
+    
+    // Print the heapified heap of heapNodes
+    //printArray(heapNodes);
+    
     // Insert a value
-    std::cout << "Inserting 11\n";
-    maxHeapInsert(heapNodes, 11);
-    printArray(heapNodes);
+    //std::cout << "Inserting 11\n";
+    //maxHeapInsert(heapNodes, 11);
+    //printArray(heapNodes);
 
-    // Increase a value
-    std::cout << heapNodes[2].value << " will become 12\n";
-    heapIncreaseKey(heapNodes, 2, 12);
-    printArray(heapNodes);
+    //// Increase a value
+    //std::cout << heapNodes[2].value << " will become 12\n";
+    //changeValue(heapNodes, 2, 12);
+    //printArray(heapNodes);
 
-    // Delete a value
-    std::cout << "Deleting 6\n";
-    deleteHeapNode(heapNodes, 5);
-    printArray(heapNodes);
+    //// Delete a value
+    //std::cout << "Deleting 6\n";
+    //deleteHeapNode(heapNodes, 5);
+    //printArray(heapNodes);
 
-    // Sort the heap
-    std::cout << "Sorting\n";
-    heapSort(heapNodes);
-    printArray(heapNodes);
+    //// Sort the heap
+    //std::cout << "Sorting\n";
+    //heapSort(heapNodes);
+    //printArray(heapNodes);
     return 0;
 }
